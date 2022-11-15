@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>RECIPE API</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Kiwi+Maru:wght@500&family=M+PLUS+Rounded+1c&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- //////titleをtxtSeachに変えたーfetch -->
+    <div class="main-title">
+        <h1>　TASTE THE WORLD.</h1>
+    </div>
+    <div class="photo-container">
+        <!-- <div>
+            <h2 class="country-name">a</h2>
+        </div> -->
+        <div class="search-area">
+            <div class="search-box">
+                <p>料理で世界を旅する</p>
+                <input type="text" 　class="txtRandom" id="txtSearch" placeholder="▶︎COUNTRY▶︎CITY">
+                <button id="btn">SERCH</button><button id="random-btn">RANDOM</button>
+            </div>
+        </div>
+        <div id="photo-frame">
+        </div>
+    </div>
+
+    <div id="recipe-container">
+        <div id="recipe-each-outline">
+            <div id="recipe-each"></div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- axiosライブラリの読み込み -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+
+        $('#btn').on('click', function () {
+            const txtSearch = $('#txtSearch').val();
+            // })
+
+            // リクエストを送るurlを準備
+
+            const baseUrl = `https://api.edamam.com/api/recipes/v2?type=public&app_id=1605b219&app_key=&random=true&q=`;
+            // &q=chicken
+            const url = baseUrl + `${txtSearch}`;
+            // console.log(url);
+
+            axios.get(url)
+                .then(function (response) {
+                    // console.log(response.data.hits[0]);
+
+                    // const url = baseUrl + `&q=${txtSearch}`;
+                    const htmlElements = [];
+                    for (let i = 0; i < 3; i++) {
+                        // $("#btn").on("click", function () {
+                        htmlElements.push(`<div id="recipe-each-outline">
+                            <div id ="recipe-img-box">
+                            <a id="recipe-image" href="${response.data.hits[i].recipe.url}" target="_blank"><img src="${response.data.hits[i].recipe?.image}"></a></div>
+                            <div id=recipe-title-box2><div id="recipe-title-box"><p id="recipe-title">"${response.data.hits[i].recipe.label}"</p></div></div></div>`);
+                    }
+                    $('#recipe-each').html(htmlElements);
+                });
+        });
+
+        $('#btn').on('click', function () {
+            const txtSearch = $('#txtSearch').val();
+
+            const clientID = ""
+            const photoUrl = `https://api.unsplash.com/search/photos/?query=${txtSearch}&client_id=${clientID}`;
+
+            axios.get(photoUrl)
+                .then(function (response) {
+                    console.log(response.data.results[0].urls.regular);
+                    const htmlElements = [];
+                    for (let i = 0; i < 1; i++) {
+                        htmlElements.push(`<img id="unsplash-photo" src="${response.data.results[0].urls.regular}">`);
+                    }
+                    $('#photo-frame').html(htmlElements);
+                });
+
+        });
+
+        const country = ['america', 'japan', 'spain', 'italy', 'korea', 'China', 'france', 'taiwan', 'Argentina', 'south africa', 'Australia', 'India', 'belgium', 'peru', 'brazil', 'chile', 'greece', 'jamaica', 'hungary', 'kenya', 'thailand', 'singapore', 'norway', 'egypt']
+
+        $('#random-btn').on('click', function () {
+            const randomCountry = Math.floor(Math.random() * country.length);
+            // console.log(country[randomCountry]);
+            // $('.txtRandom').text(country[randomCountry]);
+            document.getElementById('txtSearch').value = country[randomCountry];
+            return
+        });
+
+
+
+    </script>
+
+
+</body>
+
+</html>
